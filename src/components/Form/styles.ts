@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
 
     padding: 12,
 
-    minWidth: 322,
+    minWidth: 344,
 
     marginBottom: 8,
 

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { theme } from '~/theme';
 import { feedbackTypes, FeedbackTypesKey } from '~/utils/feedbackTypes';
+import { Button } from '../Button';
 import { CameraButton } from '../CameraButton';
 import { styles } from './styles';
 
@@ -49,8 +50,10 @@ export function Form({ feedbackType, ...rest }: FormProps) {
         <CameraButton
           onTakeScreenshot={() => {}}
           onRemoveScreenshot={() => {}}
-          screenshot=""
+          screenshot="https://github.com/tiagobarros01.png"
         />
+
+        <Button isLoading={false} />
       </View>
     </View>
   );
