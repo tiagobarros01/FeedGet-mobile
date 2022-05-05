@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { ArrowLeft } from 'phosphor-react-native';
 import React, { useState } from 'react';
 import {
@@ -9,6 +10,7 @@ import {
   ViewProps,
 } from 'react-native';
 import { captureScreen } from 'react-native-view-shot';
+import { api } from '~/services/api';
 import { theme } from '~/theme';
 import { feedbackTypes, FeedbackTypesKey } from '~/utils/feedbackTypes';
 import { Button } from '../Button';
@@ -17,10 +19,20 @@ import { styles } from './styles';
 
 type FormProps = ViewProps & {
   feedbackType: FeedbackTypesKey;
+  onCancelFeedback(): void;
+  onFeedbackSent(): void;
 };
 
-export function Form({ feedbackType, ...rest }: FormProps) {
+export function Form({
+  feedbackType,
+  onCancelFeedback,
+  onFeedbackSent,
+  ...rest
+}: FormProps) {
   const [screenshot, setScreenshot] = useState<string | null>(null);
+  const [comment, setComment] = useState('');
+
+  const [isSendingFeedback, setIsSendingFeedback] = useState(false);
 
   const feedbackTypeInfo = feedbackTypes[feedbackType];
 
@@ -41,10 +53,32 @@ export function Form({ feedbackType, ...rest }: FormProps) {
     setScreenshot(null);
   }
 
+  async function handleSubmitFeedback() {
+    if (isSendingFeedback) return;
+
+    setIsSendingFeedback(true);
+
+    try {
+      await api.post('/feedbacks', {
+        type: feedbackType,
+        comment,
+        screenshot,
+      });
+
+      onFeedbackSent();
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        console.log(err);
+      }
+    } finally {
+      setIsSendingFeedback(false);
+    }
+  }
+
   return (
     <View style={styles.container} {...rest}>
       <View style={styles.header}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={onCancelFeedback}>
           <ArrowLeft
             size="24"
             weight="bold"
@@ -64,6 +98,9 @@ export function Form({ feedbackType, ...rest }: FormProps) {
         style={styles.input}
         placeholder="Algo não está funcionando bem? Queremos corrigir. Conte com detalhes o que está acontecendo..."
         placeholderTextColor={theme.colors.text_secondary}
+        autoCorrect={false}
+        onChangeText={setComment}
+        value={comment}
       />
 
       <View style={styles.footer}>
@@ -73,7 +110,11 @@ export function Form({ feedbackType, ...rest }: FormProps) {
           screenshot={screenshot}
         />
 
-        <Button isLoading={false} />
+        <Button
+          disabled={!comment}
+          isLoading={isSendingFeedback}
+          onPress={handleSubmitFeedback}
+        />
       </View>
     </View>
   );
