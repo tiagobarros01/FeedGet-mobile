@@ -1,8 +1,16 @@
 import { ArrowLeft } from 'phosphor-react-native';
 import React from 'react';
-import { Image, Text, TouchableOpacity, View, ViewProps } from 'react-native';
+import {
+  Image,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  ViewProps,
+} from 'react-native';
 import { theme } from '~/theme';
 import { feedbackTypes, FeedbackTypesKey } from '~/utils/feedbackTypes';
+import { CameraButton } from '../CameraButton';
 import { styles } from './styles';
 
 type FormProps = ViewProps & {
@@ -28,6 +36,21 @@ export function Form({ feedbackType, ...rest }: FormProps) {
 
           <Text style={styles.titleText}>{feedbackTypeInfo.title}</Text>
         </View>
+      </View>
+
+      <TextInput
+        multiline
+        style={styles.input}
+        placeholder="Algo não está funcionando bem? Queremos corrigir. Conte com detalhes o que está acontecendo..."
+        placeholderTextColor={theme.colors.text_secondary}
+      />
+
+      <View style={styles.footer}>
+        <CameraButton
+          onTakeScreenshot={() => {}}
+          onRemoveScreenshot={() => {}}
+          screenshot=""
+        />
       </View>
     </View>
   );
