@@ -4,7 +4,7 @@ import React, { useRef } from 'react';
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import { theme } from '~/theme/index';
-import { Form } from '../Form';
+import { Success } from '../Success';
 import { styles } from './styles';
 
 function WidgetComponent(props: TouchableOpacityProps) {
@@ -34,7 +34,8 @@ function WidgetComponent(props: TouchableOpacityProps) {
         ref={bottomSheetRef}
         snapPoints={[1, 280]}
       >
-        <Form feedbackType="BUG" />
+        {/* <Form feedbackType="BUG" /> */}
+        <Success />
       </BottomSheet>
     </>
   );
