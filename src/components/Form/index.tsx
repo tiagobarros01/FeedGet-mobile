@@ -1,5 +1,5 @@
 import { ArrowLeft } from 'phosphor-react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   Text,
@@ -8,6 +8,7 @@ import {
   View,
   ViewProps,
 } from 'react-native';
+import { captureScreen } from 'react-native-view-shot';
 import { theme } from '~/theme';
 import { feedbackTypes, FeedbackTypesKey } from '~/utils/feedbackTypes';
 import { Button } from '../Button';
@@ -19,7 +20,26 @@ type FormProps = ViewProps & {
 };
 
 export function Form({ feedbackType, ...rest }: FormProps) {
+  const [screenshot, setScreenshot] = useState<string | null>(null);
+
   const feedbackTypeInfo = feedbackTypes[feedbackType];
+
+  async function handleTakeScreenshot() {
+    try {
+      const uri = await captureScreen({
+        format: 'jpg',
+        quality: 0.8,
+      });
+
+      setScreenshot(uri);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function handleRemoveScreenshot() {
+    setScreenshot(null);
+  }
 
   return (
     <View style={styles.container} {...rest}>
@@ -48,9 +68,9 @@ export function Form({ feedbackType, ...rest }: FormProps) {
 
       <View style={styles.footer}>
         <CameraButton
-          onTakeScreenshot={() => {}}
-          onRemoveScreenshot={() => {}}
-          screenshot="https://github.com/tiagobarros01.png"
+          onTakeScreenshot={handleTakeScreenshot}
+          onRemoveScreenshot={handleRemoveScreenshot}
+          screenshot={screenshot}
         />
 
         <Button isLoading={false} />
