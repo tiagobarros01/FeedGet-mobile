@@ -68,7 +68,7 @@ export function Form({
       onFeedbackSent();
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        console.log(err);
+        console.log(err.message || err.response?.data);
       }
     } finally {
       setIsSendingFeedback(false);
