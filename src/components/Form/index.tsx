@@ -1,4 +1,5 @@
 import axios from 'axios';
+import * as FileSystem from 'expo-file-system';
 import { ArrowLeft } from 'phosphor-react-native';
 import React, { useState } from 'react';
 import {
@@ -58,12 +59,22 @@ export function Form({
 
     setIsSendingFeedback(true);
 
-    try {
-      await api.post('/feedbacks', {
-        type: feedbackType,
-        comment,
-        screenshot,
+    const paramsToSubmit = {
+      type: feedbackType,
+      comment,
+      screenshot,
+    };
+
+    if (screenshot) {
+      const screenshotBase64 = await FileSystem.readAsStringAsync(screenshot, {
+        encoding: 'base64',
       });
+
+      paramsToSubmit.screenshot = `data:image/png;base64, ${screenshotBase64}`;
+    }
+
+    try {
+      await api.post('/feedbacks', paramsToSubmit);
 
       onFeedbackSent();
     } catch (err) {
